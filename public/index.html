@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecallOps - SRE Incident Intelligence & Automated Memory</title>
+  <meta name="description" content="Enterprise DevOps and SRE incident intelligence platform powered by Vectorize Hindsight memory engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-dark">
+
+  <!-- Application Shell -->
+  <div class="app-shell">
+    
+    <!-- Top Global Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <span class="brand-name">RecallOps</span>
+          <span class="brand-tag">SRE ENGINE</span>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <div class="cluster-selector" title="Active Cluster Environment">
+          <span class="env-pill prod">PROD</span>
+          <span class="cluster-name">us-east-1 / cluster-prod-04</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <!-- Live System Status Metric -->
+        <div class="engine-status" id="engineStatusIndicator">
+          <span class="status-indicator-dot online"></span>
+          <span class="engine-status-text">Hindsight Memory Bank: <strong>CONNECTED</strong></span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <button class="btn btn-secondary btn-sm" id="btnOpenNewIncidentModal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Ingest Incident</span>
+        </button>
+        <button class="btn btn-secondary btn-sm btn-icon-only" id="themeToggleBtn" title="Toggle Theme">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="user-avatar" title="On-Call SRE Engineer">
+          <span>SR</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sub-Header / KPI Metrics Bar -->
+    <section class="kpi-banner">
+      <div class="kpi-metric">
+        <span class="kpi-label">HINDSIGHT MEMORIES</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpiTotalMemories">1,248</span>
+          <span class="kpi-subtext positive">+14 this week</span>
+        </div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-metric">
+        <span class="kpi-label">FIX SUCCESS RATE</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value text-emerald" id="kpiSuccessRate">94.8%</span>
+          <span class="kpi-badge badge-success">Empirical</span>
+        </div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-metric">
+        <span class="kpi-label">RECURRENCE PREVENTION</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpiMTTR">78.2%</span>
+          <span class="kpi-subtext">Prevented repeat outages</span>
+        </div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-metric">
+        <span class="kpi-label">ACTIVE SYSTEM RISK</span>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpiRiskState">STABLE</span>
+          <span class="kpi-dot dot-green" id="kpiRiskDot"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main DevOps Dashboard Workspace -->
+    <main class="dashboard-viewport">
+
+      <!-- Query / Telemetry Search Console -->
+      <section class="search-console-card">
+        <div class="console-header">
+          <div class="console-title-row">
+            <span class="console-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <h2 class="console-title">Incident Analysis & Resolution Dispatcher</h2>
+          </div>
+          <span class="console-meta">Vector search & empirical Bayesian fix ranking across Hindsight memory</span>
+        </div>
+
+        <form id="analyzeForm" class="console-form">
+          <div class="search-input-group">
+            <div class="input-icon-wrapper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <input 
+              type="text" 
+              id="issueInput" 
+              class="console-input" 
+              placeholder="Paste incident log, error signature, or issue symptom (e.g. Database connection pool exhausted under peak load spikes)..." 
+              required
+              autocomplete="off"
+            />
+            <button type="button" class="btn-input-clear" id="btnClearInput" style="display:none;" title="Clear input">&times;</button>
+          </div>
+
+          <div class="console-controls">
+            <div class="filter-dropdown-group">
+              <label class="filter-label">Service Scope:</label>
+              <select class="control-select" id="serviceScopeSelect">
+                <option value="all">All Services (Global)</option>
+                <option value="database">Database Cluster (Postgres/Redis)</option>
+                <option value="backend">Backend API Gateway</option>
+                <option value="workers">Async Queue Workers</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnAnalyze">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              <span class="btn-text">Execute Analysis</span>
+              <div class="spinner" id="analyzeSpinner" style="display:none;"></div>
+            </button>
+          </div>
+        </form>
+
+        <!-- Structured Telemetry Tags -->
+        <div class="telemetry-bar">
+          <span class="telemetry-label">Telemetry Presets:</span>
+          <div class="telemetry-chips">
+            <button type="button" class="t-chip" data-issue="Database connection pool exhausted under heavy traffic">
+              <span class="chip-status crit"></span> #db-connection-pool-exhausted
+            </button>
+            <button type="button" class="t-chip" data-issue="Slow query execution causing database timeout">
+              <span class="chip-status warn"></span> #unindexed-slow-query-timeout
+            </button>
+            <button type="button" class="t-chip" data-issue="High memory usage causing OOM in Node.js service">
+              <span class="chip-status crit"></span> #worker-oom-heap-limit
+            </button>
+            <button type="button" class="t-chip" data-issue="Frontend 504 Gateway Timeout during batch export">
+              <span class="chip-status warn"></span> #gateway-504-timeout
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 Core DevOps Cards Grid -->
+      <div class="devops-cards-grid" id="devopsGrid" style="display: none;">
+
+        <!-- ==============================================================
+             CARD 1: Incident Insights
+             ============================================================== -->
+        <div class="devops-card card-insights" id="cardInsights">
+          <div class="card-top-bar">
+            <div class="card-heading">
+              <span class="card-badge-num">01</span>
+              <h3 class="card-main-title">Incident Insights</h3>
+            </div>
+            <div class="card-telemetry-tags">
+              <span class="data-pill" id="frequencyPill">
+                Occurrence Frequency: <strong id="frequencyCountDisplay">0</strong>
+              </span>
+              <span class="data-pill pill-cyan" id="matchRelevancePill">
+                Max Relevance: <strong id="maxRelevanceDisplay">0%</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="card-content-area">
+            <!-- Insights Telemetry Overview Table -->
+            <div class="telemetry-summary-row">
+              <div class="summary-stat-cell">
+                <span class="stat-cell-label">MATCHED INCIDENTS</span>
+                <span class="stat-cell-value" id="statMatchedCount">0</span>
+              </div>
+              <div class="summary-stat-cell">
+                <span class="stat-cell-label">SEMANTIC SIMILARITY</span>
+                <span class="stat-cell-value text-cyan" id="statSimilarityPct">0%</span>
+              </div>
+              <div class="summary-stat-cell">
+                <span class="stat-cell-label">VERIFIED SUCCESSES</span>
+                <span class="stat-cell-value text-emerald" id="statVerifiedCount">0</span>
+              </div>
+            </div>
+
+            <!-- Structured Incident Data Table -->
+            <div class="incident-table-wrapper">
+              <table class="devops-table">
+                <thead>
+                  <tr>
+                    <th>MATCH</th>
+                    <th>HISTORICAL ISSUE</th>
+                    <th>ROOT CAUSE</th>
+                    <th>VERIFIED OUTCOME</th>
+                  </tr>
+                </thead>
+                <tbody id="similarIncidentsTableBody">
+                  <!-- Dynamically Rendered -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             CARD 2: Suggested Fix
+             ============================================================== -->
+        <div class="devops-card card-suggested-fix" id="cardSuggestedFix">
+          <div class="card-top-bar">
+            <div class="card-heading">
+              <span class="card-badge-num">02</span>
+              <h3 class="card-main-title">Suggested Fix</h3>
+            </div>
+            <div class="card-telemetry-tags">
+              <span class="confidence-badge" id="confidenceBadge">
+                Confidence: <strong id="confidencePctDisplay">0%</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="card-content-area">
+            <!-- Root Cause Diagnostic Section -->
+            <div class="structured-field-block">
+              <div class="field-meta-row">
+                <span class="field-label-tag">DIAGNOSTIC ROOT CAUSE</span>
+                <span class="field-aux" id="rootCauseAux">Extracted from memory bank</span>
+              </div>
+              <div class="field-content-box root-cause-box" id="diagnosticRootCauseText">
+                Analyzing root cause...
+              </div>
+            </div>
+
+            <!-- Recommended Best Fix Code/Shell Block -->
+            <div class="structured-field-block">
+              <div class="field-meta-row">
+                <span class="field-label-tag text-emerald">PRIMARY RECOMMENDED FIX</span>
+                <button type="button" class="btn-copy-code" id="btnCopyFixCode" title="Copy fix to clipboard">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <span id="copyBtnLabel">Copy Action</span>
+                </button>
+              </div>
+              <div class="code-execution-box">
+                <pre><code id="suggestedFixCodeBlock">Calculating optimal fix...</code></pre>
+              </div>
+            </div>
+
+            <!-- Statistical Confidence & Evidence Explanation -->
+            <div class="evidence-box">
+              <div class="evidence-header">
+                <span class="evidence-title">Empirical Evidence & Reasoning:</span>
+                <span class="evidence-score" id="evidenceScoreTag">100% Success</span>
+              </div>
+              <p class="evidence-text" id="evidenceReasonText">Evaluating historical fix metrics...</p>
+              
+              <!-- Confidence Meter Bar -->
+              <div class="meter-bar-container">
+                <div class="meter-bar-track">
+                  <div class="meter-bar-fill" id="confidenceMeterFill" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fix Validation & Memory Feedback -->
+            <div class="feedback-verification-strip">
+              <span class="strip-label">OPERATOR VERIFICATION:</span>
+              <div class="strip-actions">
+                <button type="button" class="btn-verify-worked" id="btnVerifyWorked">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Worked (Confirm)</span>
+                </button>
+                <button type="button" class="btn-verify-failed" id="btnVerifyFailed">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <span>Failed (Reject)</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="verification-toast" id="verificationToast" style="display:none;">
+              <span class="toast-indicator"></span>
+              <span class="toast-txt" id="verificationToastText">Memory bank updated.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             CARD 3: Risk Detection
+             ============================================================== -->
+        <div class="devops-card card-risk-detection" id="cardRiskDetection">
+          <div class="card-top-bar">
+            <div class="card-heading">
+              <span class="card-badge-num">03</span>
+              <h3 class="card-main-title">Risk Detection</h3>
+            </div>
+            <div class="card-telemetry-tags">
+              <span class="risk-matrix-pill" id="riskMatrixPill">EVALUATING</span>
+            </div>
+          </div>
+
+          <div class="card-content-area">
+            <!-- Pattern Status Banner -->
+            <div class="risk-status-panel" id="riskStatusPanel">
+              <div class="risk-panel-icon-col" id="riskPanelIcon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div class="risk-panel-body">
+                <div class="risk-panel-title-row">
+                  <h4 class="risk-panel-title" id="riskPanelTitle">Pattern Status</h4>
+                  <span class="risk-threshold-tag" id="riskThresholdTag">Threshold: 3+</span>
+                </div>
+                <p class="risk-panel-desc" id="riskPanelDesc">Evaluating incident patterns across history.</p>
+              </div>
+            </div>
+
+            <!-- Recurrence Prediction Metric -->
+            <div class="structured-field-block">
+              <div class="field-meta-row">
+                <span class="field-label-tag">PREDICTIVE RECURRENCE RISK</span>
+                <span class="risk-severity-badge" id="riskSeverityBadge">EVALUATING</span>
+              </div>
+              <div class="field-content-box prediction-box" id="predictionDetailsBox">
+                Computing Bayesian recurrence probability...
+              </div>
+            </div>
+
+            <!-- Rule-Based Preventive Action Playbook -->
+            <div class="structured-field-block">
+              <div class="field-meta-row">
+                <span class="field-label-tag text-amber">PREVENTIVE ACTION PLAYBOOK</span>
+                <span class="field-aux">Architectural Safeguard</span>
+              </div>
+              <div class="playbook-box" id="preventiveActionBox">
+                <div class="playbook-item">
+                  <span class="playbook-bullet">▶</span>
+                  <span class="playbook-text" id="preventiveActionText">Analyzing safeguard playbook...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty State / Standby Screen -->
+      <section class="standby-dashboard-state" id="standbyState">
+        <div class="standby-panel">
+          <div class="standby-radar">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="2" x2="12" y2="6"></line>
+              <line x1="12" y1="18" x2="12" y2="22"></line>
+              <line x1="2" y1="12" x2="6" y2="12"></line>
+              <line x1="18" y1="12" x2="22" y2="12"></line>
+            </svg>
+          </div>
+          <h3 class="standby-title">RecallOps SRE Incident Console Standby</h3>
+          <p class="standby-desc">Enter an incident signature or error symptom above to search memory for matching incident insights, empirical resolution fixes, and recurrence risk detection.</p>
+          <div class="standby-quick-links">
+            <button type="button" class="btn btn-secondary btn-sm preset-launcher" data-issue="Database connection pool exhausted under heavy traffic">
+              Launch DB Pool Simulation
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm preset-launcher" data-issue="High memory usage causing OOM in Node.js service">
+              Launch OOM Simulation
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Status Bar -->
+    <footer class="app-status-bar">
+      <div class="status-left">
+        <span class="status-cell">RecallOps v1.2.0-prod</span>
+        <span class="status-cell">Engine: @vectorize-io/hindsight-client</span>
+        <span class="status-cell">Memory Bank: default-bank</span>
+      </div>
+      <div class="status-right">
+        <span class="status-cell latency" id="latencyIndicator">API Latency: 12ms</span>
+        <span class="status-cell status-ok">All Systems Nominal</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Modal: Ingest New Incident Postmortem -->
+  <div class="devops-modal-backdrop" id="modalBackdrop" style="display:none;">
+    <div class="devops-modal-window">
+      <div class="modal-title-bar">
+        <div class="modal-title-group">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          <h3 class="modal-heading">Ingest Incident Postmortem Memory</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnModalClose">&times;</button>
+      </div>
+
+      <form id="ingestModalForm" class="modal-form-body">
+        <div class="form-row">
+          <label class="form-label">Incident Symptom / Issue <span class="req">*</span></label>
+          <input type="text" id="modalInputIssue" class="form-text-input" placeholder="e.g. Database connection pool exhausted under heavy traffic" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Root Cause Analysis <span class="req">*</span></label>
+          <input type="text" id="modalInputRootCause" class="form-text-input" placeholder="e.g. Default pool size of 10 was insufficient for 1000 req/s" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Applied Resolution Fix <span class="req">*</span></label>
+          <input type="text" id="modalInputFix" class="form-text-input" placeholder="e.g. Increased connection pool size to 50 in database config" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Observed Production Outcome <span class="req">*</span></label>
+          <input type="text" id="modalInputOutcome" class="form-text-input" placeholder="e.g. DB connection errors eliminated under peak load" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Telemetry Tags (Comma separated)</label>
+          <input type="text" id="modalInputTags" class="form-text-input" placeholder="e.g. database, pool, postgres, timeout">
+        </div>
+
+        <div class="modal-actions-bar">
+          <button type="button" class="btn btn-secondary" id="btnModalCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnModalSubmit">
+            <span>Retain in Hindsight</span>
+            <div class="spinner" id="modalSpinner" style="display:none;"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
