@@ -7,10 +7,12 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Server running in ${config.nodeEnv} mode on http://localhost:${PORT}`);
   console.log(`📡 Endpoints available:`);
   console.log(`   - GET  /health`);
+  console.log(`   - GET  /store/memory`);
   console.log(`   - POST /store`);
   console.log(`   - POST /analyze`);
   console.log(`   - POST /feedback`);
 });
+
 
 // Graceful Shutdown
 const shutdown = (signal) => {

@@ -97,15 +97,17 @@ class FeedbackService {
       tags,
     });
 
-    // Update corresponding incident in storeService if linked
+    // Update corresponding incident in storeService if linked or create newly verified memory
     const updatedIncident = await storeService.updateIncidentFeedback(
       incident_id || issue,
       {
         status: resolvedStatus,
         notes: notes || null,
         actual_outcome: actual_outcome || null,
+        fix,
       }
     );
+
 
     const record = {
       id,

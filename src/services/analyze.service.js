@@ -1,13 +1,18 @@
 import { hindsightService } from './hindsight.service.js';
+import { isHindsightConfigured } from '../config/hindsight.js';
+import { config } from '../config/env.js';
 import { storeService } from './store.service.js';
 import { feedbackService } from './feedback.service.js';
+import { cascadeflowService } from './cascadeflow.service.js';
 
 class AnalyzeService {
   /**
    * Analyze an issue by searching Hindsight memory for similar issues,
    * ranking past incidents by success rate, detecting recurring patterns (3+ occurrences),
    * applying prediction logic for risk of recurrence and preventive actions,
-   * and returning the best fix with confidence score, pattern detection, and evidence reason.
+   * invoking Hindsight reflect to synthesize recommendations when configured,
+   * refining remediation via CascadeFlow runtime intelligence,
+   * and returning the best fix with confidence score, pattern detection, evidence reason, memory_proof, and runtime_intelligence.
    *
    * @param {Object} params
    * @param {string} params.issue - User issue description
@@ -16,9 +21,11 @@ class AnalyzeService {
    * @param {string[]} [params.tags] - Optional tag filters
    */
   async analyzeIssue({ issue, bankId, limit = 3, tags = [] }) {
+    const targetBankId = bankId || config.hindsightBankId;
+
     // 1. Query Hindsight memory bank for semantic matches
     const hindsightRecall = await hindsightService.recall({
-      bankId,
+      bankId: targetBankId,
       query: issue,
       tags: tags.length > 0 ? tags : undefined,
     });
@@ -52,7 +59,32 @@ class AnalyzeService {
       patternAnalysis
     );
 
-    // 8. Format top similar issues
+    // 8. Synthesize recommendation via Hindsight reflect
+    const isConfigured = isHindsightConfigured();
+    let hindsightReflection = null;
+    let reflectionStatus = 'simulated';
+
+    if (isConfigured) {
+      try {
+        const reflectQuery = `Given the reported incident: "${issue}", historical root cause: "${topMatches[0]?.root_cause || 'Unknown'}", and recommended fix: "${fixAnalysis.best_fix}", synthesize the optimal resolution strategy, confidence assessment, and recurrence safeguards.`;
+        hindsightReflection = await hindsightService.reflect({
+          bankId: targetBankId,
+          query: reflectQuery,
+        });
+        reflectionStatus = hindsightReflection?.status || 'live';
+      } catch (error) {
+        console.error('[Hindsight Reflect Error] Failed during analysis synthesis:', error.message);
+        reflectionStatus = 'error';
+      }
+    } else {
+      hindsightReflection = await hindsightService.reflect({
+        bankId: targetBankId,
+        query: issue,
+      });
+      reflectionStatus = 'simulated';
+    }
+
+    // 9. Format top similar issues
     const similarIssues = topMatches.map((item) => ({
       id: item.id,
       issue: item.issue,
@@ -75,8 +107,49 @@ class AnalyzeService {
       new Set(topMatches.map((item) => item.outcome).filter(Boolean))
     );
 
+    // 10. Construct honest memory_proof verifying origin (never claim live if simulated)
+    const isLive = isConfigured && hindsightRecall?.status !== 'simulated';
+    const memoryProof = {
+      mode: isLive ? 'hindsight' : 'local-fallback',
+      label: isLive
+        ? `Vectorize Hindsight (Bank: ${targetBankId})`
+        : 'Local Memory Ledger (Hindsight Unconfigured)',
+      recall_status: isLive ? (hindsightRecall?.status || 'live') : 'simulated',
+      reflection_status: isLive ? reflectionStatus : 'simulated',
+      evidence_count: similarIssues.length,
+    };
+
+    // 11. Refine remediation via CascadeFlow runtime intelligence
+    const cascadeResult = await cascadeflowService.refineRemediation({
+      issue,
+      root_cause: topMatches[0]?.root_cause,
+      best_fix: fixAnalysis.best_fix,
+      similar_issues: similarIssues,
+      pattern_analysis: patternAnalysis,
+    });
+
+    const activeFix = (cascadeResult && cascadeResult.refined_fix)
+      ? cascadeResult.refined_fix
+      : fixAnalysis.best_fix;
+
+    const runtimeIntelligence = cascadeResult?.runtime_intelligence || {
+      enabled: false,
+      mode: 'simulated',
+      model_used: 'none (simulated-cascade-router)',
+      total_cost: 0.0,
+      savings_percentage: 0.0,
+      cascaded: false,
+      draft_accepted: false,
+      latency_ms: 0,
+      routing_strategy: 'rule-based-fallback',
+      budget_usd: config.cascadeBudgetUsd,
+      message: 'CascadeFlow runtime intelligence simulated in development mode (no LLM provider keys configured).',
+    };
+
     return {
       query_issue: issue,
+      memory_proof: memoryProof,
+      runtime_intelligence: runtimeIntelligence,
       pattern_alert: patternAnalysis.is_recurring
         ? 'Recurring issue detected'
         : null,
@@ -98,11 +171,11 @@ class AnalyzeService {
         frequency_count: patternAnalysis.frequency_count,
         threshold: 3,
       },
-      best_fix: fixAnalysis.best_fix,
+      best_fix: activeFix,
       confidence_score: fixAnalysis.confidence_score,
       reason: fixAnalysis.reason,
       recommendation: {
-        fix: fixAnalysis.best_fix,
+        fix: activeFix,
         confidence_score: fixAnalysis.confidence_score,
         success_rate: `${(fixAnalysis.success_rate * 100).toFixed(0)}%`,
         times_worked: fixAnalysis.times_worked,
@@ -121,8 +194,11 @@ class AnalyzeService {
       past_fixes: pastFixes,
       outcomes: outcomes,
       hindsight_search: hindsightRecall,
+      hindsight_reflection: hindsightReflection,
     };
   }
+
+
 
   /**
    * Pattern Detection: Check if similar incidents occur 3 or more times

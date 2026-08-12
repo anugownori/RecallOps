@@ -128,7 +128,93 @@ describe('Modular Express Backend API Tests', () => {
     });
   });
 
+  describe('GET /store/memory (Team Memory Wall)', () => {
+    it('should return retained memories newest-first with worked, failed, and pending counts', async () => {
+      // Clear and manually store two incidents with distinct timestamps
+      await storeService.clear();
+
+      const memory1 = await storeService.storeIncident({
+        issue: 'Older incident: Redis cache evictions',
+        root_cause: 'TTL expiry storm',
+        fix: 'Added jitter to TTL',
+        outcome: 'Cache stabilized',
+        tags: ['redis', 'cache'],
+        metadata: { createdAt: new Date(Date.now() - 3600000).toISOString() },
+      });
+      await storeService.updateIncidentFeedback(memory1.id, { status: 'worked' });
+
+      const memory2 = await storeService.storeIncident({
+        issue: 'Newer incident: Postgres pool timeout',
+        root_cause: 'Pool size exhausted',
+        fix: 'Increased pool size to 50',
+        outcome: 'DB normalized',
+        tags: ['database', 'postgres'],
+        metadata: { createdAt: new Date().toISOString() },
+      });
+      await storeService.updateIncidentFeedback(memory2.id, { status: 'worked' });
+      await storeService.updateIncidentFeedback(memory2.id, { status: 'worked' });
+
+
+      const response = await request(app).get('/store/memory');
+
+      assert.equal(response.status, 200);
+      assert.equal(response.body.success, true);
+      assert.ok(response.body.data.memories);
+      assert.equal(response.body.data.total, 2);
+
+      const memories = response.body.data.memories;
+      // Should be newest-first (memory2 first, then memory1)
+      assert.equal(memories[0].issue, 'Newer incident: Postgres pool timeout');
+      assert.equal(memories[1].issue, 'Older incident: Redis cache evictions');
+
+      // Verify fields required for Team Memory Wall
+      assert.ok(memories[0].fix);
+      assert.ok(memories[0].outcome);
+      assert.ok(Array.isArray(memories[0].tags));
+      assert.equal(memories[0].worked_count, 2);
+      assert.equal(memories[0].failed_count, 0);
+      assert.equal(memories[0].counts.worked, 2);
+
+      // Verify stats
+      assert.equal(response.body.data.stats.worked_count, 3);
+      assert.equal(response.body.data.stats.failed_count, 0);
+    });
+
+    it('should auto-seed realistic memories when store is empty for offline demo', async () => {
+      await storeService.clear();
+
+      const response = await request(app).get('/store/memory');
+
+      assert.equal(response.status, 200);
+      assert.equal(response.body.success, true);
+      assert.ok(response.body.data.total >= 6, 'Should auto-seed at least 6 realistic incidents');
+      assert.ok(response.body.data.memories.length >= 6);
+
+      // Verify items have worked/failed/pending indicators
+      const hasWorked = response.body.data.memories.some((m) => m.worked_count > 0);
+      const hasFailed = response.body.data.memories.some((m) => m.failed_count > 0);
+      const hasPending = response.body.data.memories.some((m) => m.pending_count > 0);
+
+      assert.ok(hasWorked, 'Should have memories marked as worked');
+      assert.ok(hasFailed, 'Should have memories marked as failed');
+      assert.ok(hasPending, 'Should have memories marked as pending');
+    });
+
+    it('should support tag and status query filters', async () => {
+      await storeService.clear();
+
+      const responseTag = await request(app).get('/store/memory?tag=database');
+      assert.equal(responseTag.status, 200);
+      assert.ok(responseTag.body.data.memories.every((m) => m.tags.includes('database')));
+
+      const responseFailed = await request(app).get('/store/memory?status=failed');
+      assert.equal(responseFailed.status, 200);
+      assert.ok(responseFailed.body.data.memories.every((m) => m.status === 'failed' || m.failed_count > 0));
+    });
+  });
+
   describe('POST /analyze', () => {
+
     beforeEach(async () => {
       // Seed sample incidents with verification counts
       const inc1 = await storeService.storeIncident({
@@ -214,7 +300,36 @@ describe('Modular Express Backend API Tests', () => {
       // Verify past fixes and outcomes
       assert.ok(Array.isArray(response.body.data.past_fixes));
       assert.ok(Array.isArray(response.body.data.outcomes));
+
+      // Verify memory_proof schema and honest fallback when Hindsight unconfigured
+      const proof = response.body.data.memory_proof;
+      assert.ok(proof, 'memory_proof should be present');
+      assert.equal(proof.mode, 'local-fallback');
+      assert.ok(proof.label.includes('Local Memory Ledger'));
+      assert.equal(proof.recall_status, 'simulated');
+      assert.equal(proof.reflection_status, 'simulated');
+      assert.equal(typeof proof.evidence_count, 'number');
+
+      // Verify Hindsight reflection object
+      assert.ok(response.body.data.hindsight_reflection);
+
+      // Verify runtime_intelligence audit trail fields
+      const rt = response.body.data.runtime_intelligence;
+      assert.ok(rt, 'runtime_intelligence should be present');
+      assert.equal(typeof rt.enabled, 'boolean');
+      assert.ok(['live', 'simulated', 'unavailable', 'error'].includes(rt.mode));
+      assert.ok(typeof rt.model_used === 'string');
+      assert.ok(typeof rt.total_cost === 'number');
+      assert.ok(typeof rt.savings_percentage === 'number');
+      assert.ok(typeof rt.cascaded === 'boolean');
+      assert.ok(typeof rt.draft_accepted === 'boolean');
+      assert.ok(typeof rt.latency_ms === 'number');
+      assert.ok(typeof rt.routing_strategy === 'string');
+      assert.ok(typeof rt.budget_usd === 'number');
+      assert.ok(typeof rt.message === 'string');
     });
+
+
 
     it('should detect recurring pattern when similar issues occur 3+ times', async () => {
       // Seed 3 similar incidents
@@ -261,6 +376,11 @@ describe('Modular Express Backend API Tests', () => {
       assert.ok(response.body.data.prediction.preventive_action);
 
       assert.ok(response.body.data.reason.includes('Recurring issue detected'));
+
+      // Verify memory_proof and runtime_intelligence present
+      assert.ok(response.body.data.memory_proof);
+      assert.ok(response.body.data.runtime_intelligence);
+      assert.equal(typeof response.body.data.runtime_intelligence.enabled, 'boolean');
     });
 
     it('should not flag recurring issue when similar occurrences are under 3', async () => {
@@ -284,6 +404,11 @@ describe('Modular Express Backend API Tests', () => {
       assert.equal(response.body.data.is_recurring, false);
       assert.equal(response.body.data.pattern_alert, null);
       assert.equal(response.body.data.frequency_count, 1);
+
+      // Verify memory_proof and runtime_intelligence present
+      assert.ok(response.body.data.memory_proof);
+      assert.equal(response.body.data.memory_proof.mode, 'local-fallback');
+      assert.ok(response.body.data.runtime_intelligence);
     });
 
     it('should respect custom limit parameter when provided', async () => {
@@ -297,6 +422,10 @@ describe('Modular Express Backend API Tests', () => {
       assert.equal(response.status, 200);
       assert.equal(response.body.success, true);
       assert.ok(response.body.data.similar_issues.length <= 2);
+
+      // Verify memory_proof and runtime_intelligence
+      assert.ok(response.body.data.memory_proof);
+      assert.ok(response.body.data.runtime_intelligence);
     });
 
     it('should return 400 Bad Request when issue field is missing', async () => {
@@ -308,6 +437,7 @@ describe('Modular Express Backend API Tests', () => {
       assert.equal(response.body.success, false);
       assert.ok(response.body.errors.some((e) => e.field === 'issue'));
     });
+
   });
 
   describe('POST /feedback', () => {
@@ -455,6 +585,50 @@ describe('Modular Express Backend API Tests', () => {
     });
   });
 
+  describe('CascadeFlow Runtime Intelligence Verification', () => {
+    it('should export CascadeAgent factory preferring Groq and handle zero keys safely', async () => {
+      const { createCascadeAgent, isCascadeflowConfigured } = await import('../src/config/cascadeflow.js');
+      assert.equal(typeof createCascadeAgent, 'function');
+      assert.equal(typeof isCascadeflowConfigured, 'function');
+
+      // Zero keys check
+      assert.equal(isCascadeflowConfigured(), false);
+      const defaultAgent = createCascadeAgent();
+      assert.equal(defaultAgent, null);
+
+      // Groq preferred agent creation
+      const groqAgent = createCascadeAgent({
+        groqApiKey: 'gsk_test_groq_key_123',
+        openaiApiKey: 'sk_test_openai_key_456',
+        force: true,
+      });
+      assert.ok(groqAgent);
+      assert.equal(typeof groqAgent.run, 'function');
+      assert.ok(groqAgent.getModelCount() >= 2);
+      const models = groqAgent.getModels();
+      // Groq models should come first
+      assert.equal(models[0].provider, 'groq');
+    });
+
+    it('should return simulated runtime_intelligence audit trail when unconfigured', async () => {
+      const { cascadeflowService } = await import('../src/services/cascadeflow.service.js');
+      const result = await cascadeflowService.refineRemediation({
+        issue: 'Database connection pool exhausted under heavy load',
+        root_cause: 'Pool size too small',
+        best_fix: 'Increased connection pool size to 50',
+      });
+
+      assert.ok(result);
+      assert.equal(result.refined_fix, 'Increased connection pool size to 50');
+      assert.ok(result.runtime_intelligence);
+      assert.equal(result.runtime_intelligence.mode, 'simulated');
+      assert.equal(result.runtime_intelligence.enabled, false);
+      assert.equal(result.runtime_intelligence.total_cost, 0);
+      assert.equal(result.runtime_intelligence.savings_percentage, 0);
+      assert.equal(typeof result.runtime_intelligence.budget_usd, 'number');
+    });
+  });
+
   describe('404 Not Found Handler', () => {
     it('should return 404 for undefined routes', async () => {
       const response = await request(app).get('/non-existent-route');
@@ -465,3 +639,4 @@ describe('Modular Express Backend API Tests', () => {
     });
   });
 });
+

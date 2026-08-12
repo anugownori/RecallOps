@@ -1220,4 +1220,406 @@ body {
   .devops-cards-grid {
     grid-template-columns: 1fr;
   }
+  .tech-intelligence-bar {
+    grid-template-columns: 1fr;
+  }
 }
+
+/* ==========================================================================
+   Dual Technology Proof & Intelligence Bar
+   ========================================================================== */
+.tech-intelligence-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tech-chip {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: var(--transition);
+}
+
+.tech-chip:hover {
+  border-color: var(--border-medium);
+}
+
+.chip-hindsight {
+  border-left: 3px solid var(--cyan-primary);
+}
+
+.chip-cascadeflow {
+  border-left: 3px solid var(--emerald-primary);
+}
+
+.chip-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chip-hindsight .chip-icon {
+  background: var(--cyan-subtle);
+  color: var(--cyan-primary);
+}
+
+.chip-cascadeflow .chip-icon {
+  background: var(--emerald-subtle);
+  color: var(--emerald-primary);
+}
+
+.chip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.chip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.chip-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.04em;
+}
+
+.chip-badge.live {
+  background: var(--emerald-subtle);
+  color: var(--emerald-primary);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.chip-badge.simulated, .chip-badge.fallback {
+  background: var(--amber-subtle);
+  color: var(--amber-primary);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.chip-details {
+  font-size: 12px;
+  color: var(--text-primary);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+}
+
+.chip-detail-divider {
+  color: var(--text-disabled);
+}
+
+/* ==========================================================================
+   Team Memory Wall Section
+   ========================================================================== */
+.memory-wall-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-panel);
+}
+
+.memory-wall-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.wall-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wall-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wall-icon {
+  color: var(--cyan-primary);
+  display: flex;
+  align-items: center;
+}
+
+.wall-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.wall-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--cyan-subtle);
+  color: var(--cyan-primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  font-family: var(--font-mono);
+}
+
+.wall-pulse-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--emerald-primary);
+  font-family: var(--font-mono);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--emerald-primary);
+  box-shadow: 0 0 8px var(--emerald-primary);
+  animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--emerald-primary); }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.wall-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.wall-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wall-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg-input);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.w-filter-pill {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.w-filter-pill:hover {
+  color: var(--text-primary);
+}
+
+.w-filter-pill.active {
+  background: var(--bg-panel-elevated);
+  color: var(--cyan-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.memory-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+.memory-card {
+  background: var(--bg-panel-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.memory-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.memory-card-highlighted {
+  border-color: var(--emerald-primary) !important;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.45) !important;
+  animation: highlightFlash 3.5s ease-out;
+}
+
+@keyframes highlightFlash {
+  0% {
+    background-color: rgba(16, 185, 129, 0.25);
+    border-color: var(--emerald-primary);
+    transform: scale(1.02);
+  }
+  50% {
+    background-color: rgba(16, 185, 129, 0.1);
+  }
+  100% {
+    background-color: var(--bg-panel-elevated);
+    transform: scale(1);
+  }
+}
+
+.memory-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.memory-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.memory-status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+.memory-status-badge.worked {
+  background: var(--emerald-subtle);
+  color: var(--emerald-primary);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.memory-status-badge.failed {
+  background: var(--rose-subtle);
+  color: var(--rose-primary);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+.memory-status-badge.pending {
+  background: var(--amber-subtle);
+  color: var(--amber-primary);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.memory-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.memory-detail-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.memory-detail-content {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.memory-fix-snippet {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  background: var(--bg-input);
+  padding: 6px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.memory-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11px;
+}
+
+.memory-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.memory-tag-chip {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  background: var(--bg-input);
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
+}
+
+.memory-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.memory-count-pill {
+  font-weight: 600;
+  font-size: 10.5px;
+}
+
+.memory-count-pill.worked { color: var(--emerald-primary); }
+.memory-count-pill.failed { color: var(--rose-primary); }
+

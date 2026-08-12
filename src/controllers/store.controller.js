@@ -28,3 +28,29 @@ export const storeIncident = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * Controller to handle GET /store/memory
+ * Retrieves retained incident memories sorted newest-first with worked/failed/pending counts
+ */
+export const getMemories = async (req, res, next) => {
+  try {
+    const { tag, status, limit } = req.query;
+
+    const parsedLimit = limit ? parseInt(limit, 10) : undefined;
+    const memoryData = await storeService.getMemories({
+      tag,
+      status,
+      limit: parsedLimit,
+    });
+
+    return ApiResponse.success(
+      res,
+      'Retained memories retrieved successfully',
+      memoryData
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+

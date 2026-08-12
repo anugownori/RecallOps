@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { storeIncident } from '../controllers/store.controller.js';
+import { storeIncident, getMemories } from '../controllers/store.controller.js';
 import { validateRequest } from '../middlewares/validateRequest.js';
 
 const router = Router();
@@ -28,9 +28,22 @@ const storeSchema = z.object({
 });
 
 /**
+ * @route GET /store/memory
+ * @desc Retrieve retained incident memories for Team Memory Wall sorted newest-first
+ */
+router.get('/memory', getMemories);
+
+/**
+ * @route GET /store
+ * @desc Alias to retrieve retained incident memories
+ */
+router.get('/', getMemories);
+
+/**
  * @route POST /store
  * @desc Store incident resolution experience (issue, root_cause, fix, outcome) in Hindsight memory with structured metadata
  */
 router.post('/', validateRequest(storeSchema), storeIncident);
 
 export default router;
+

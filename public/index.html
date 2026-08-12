@@ -164,6 +164,53 @@
         </div>
       </section>
 
+      <!-- Dual Technology Verification Bar (Hindsight + CascadeFlow) -->
+      <div class="tech-intelligence-bar" id="techIntelligenceBar" style="display: none;">
+        <!-- Hindsight Memory Proof Chip -->
+        <div class="tech-chip chip-hindsight" id="chipHindsightProof">
+          <div class="chip-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="chip-body">
+            <div class="chip-header">
+              <span class="chip-title">HINDSIGHT MEMORY PROOF</span>
+              <span class="chip-badge fallback" id="hindsightModeBadge">LOCAL FALLBACK</span>
+            </div>
+            <div class="chip-details" id="hindsightProofDetails">
+              <span class="chip-detail-item" id="proofLabel">Vectorize Hindsight (default-bank)</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="proofRecallStatus">Recall: simulated</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="proofReflectStatus">Reflect: simulated</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="proofEvidenceCount">Evidence: 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CascadeFlow Runtime Intelligence Chip -->
+        <div class="tech-chip chip-cascadeflow" id="chipCascadeflowProof">
+          <div class="chip-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <div class="chip-body">
+            <div class="chip-header">
+              <span class="chip-title">CASCADEFLOW RUNTIME INTELLIGENCE</span>
+              <span class="chip-badge fallback" id="cascadeModeBadge">SIMULATED</span>
+            </div>
+            <div class="chip-details" id="cascadeProofDetails">
+              <span class="chip-detail-item" id="cascadeModelUsed">Model: simulated-router</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="cascadeSavings">Savings: 0%</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="cascadeLatency">Latency: 0ms</span>
+              <span class="chip-detail-divider">•</span>
+              <span class="chip-detail-item" id="cascadeStrategy">Strategy: heuristic</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 3 Core DevOps Cards Grid -->
       <div class="devops-cards-grid" id="devopsGrid" style="display: none;">
 
@@ -385,20 +432,63 @@
         </div>
       </section>
 
+      <!-- ==============================================================
+           SECTION: Team Memory Wall (Continuous Incident Learning)
+           ============================================================== -->
+      <section class="memory-wall-section" id="memoryWallSection">
+        <div class="memory-wall-header">
+          <div class="wall-title-col">
+            <div class="wall-title-row">
+              <span class="wall-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              </span>
+              <h3 class="wall-title">Team Memory Wall</h3>
+              <span class="wall-badge" id="wallCountBadge">Loading Memories...</span>
+              <span class="wall-pulse-tag" id="wallLiveSyncTag">
+                <span class="pulse-dot"></span> Live Sync
+              </span>
+            </div>
+            <p class="wall-desc">Living organizational incident memory powered by Vectorize Hindsight & empirical feedback reinforcement</p>
+          </div>
+
+          <div class="wall-controls">
+            <div class="wall-filter-pills" id="wallFilterPills">
+              <button type="button" class="w-filter-pill active" data-filter="all">All Memories</button>
+              <button type="button" class="w-filter-pill" data-filter="worked">✓ Verified Fixes</button>
+              <button type="button" class="w-filter-pill" data-filter="failed">✗ Failed Attempts</button>
+              <button type="button" class="w-filter-pill" data-filter="database">#database</button>
+              <button type="button" class="w-filter-pill" data-filter="memory">#memory</button>
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-sm" id="btnRefreshMemoryWall" title="Refresh memory records">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Refresh Wall</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Memory Wall Cards Grid -->
+        <div class="memory-cards-grid" id="memoryCardsGrid">
+          <!-- Populated dynamically via GET /store/memory -->
+        </div>
+      </section>
+
+
     </main>
 
     <!-- Bottom Status Bar -->
     <footer class="app-status-bar">
       <div class="status-left">
         <span class="status-cell">RecallOps v1.2.0-prod</span>
-        <span class="status-cell">Engine: @vectorize-io/hindsight-client</span>
-        <span class="status-cell">Memory Bank: default-bank</span>
+        <span class="status-cell">Memory: @vectorize-io/hindsight-client</span>
+        <span class="status-cell" id="cascadeflowStatusCell">Intelligence: @cascadeflow/core</span>
       </div>
       <div class="status-right">
         <span class="status-cell latency" id="latencyIndicator">API Latency: 12ms</span>
         <span class="status-cell status-ok">All Systems Nominal</span>
       </div>
     </footer>
+
 
   </div>
 
