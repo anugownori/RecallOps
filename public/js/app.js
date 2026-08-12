@@ -119,6 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Keyboard Shortcut (Cmd+K / Ctrl+K to focus search)
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      issueInput.focus();
+      issueInput.select();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
   // Submit Analysis Form
   analyzeForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -127,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
       executeIncidentAnalysis(query);
     }
   });
+
 
   /**
    * Execute Incident Analysis Call (POST /analyze)
