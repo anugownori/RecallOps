@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecallOps - Operator Sign In</title>
+  <meta name="description" content="Sign in to RecallOps SRE Incident Intelligence & Memory Platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Dedicated Sign-In Page Layout */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-color: var(--bg-app);
+      position: relative;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .login-header {
+      text-align: left;
+      margin-bottom: 24px;
+    }
+
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .login-brand-icon {
+      width: 28px;
+      height: 28px;
+      background-color: var(--bg-hover);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-primary);
+    }
+
+    .login-brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+
+    .login-brand-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      background-color: var(--bg-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      color: var(--text-tertiary);
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.2px;
+    }
+
+    .form-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 1px var(--accent-primary);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-disabled);
+    }
+
+    .btn-toggle-password {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-toggle-password:hover {
+      color: var(--text-primary);
+    }
+
+    .login-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-primary-auth {
+      height: 38px;
+      background-color: var(--accent-primary);
+      color: #ffffff;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .btn-primary-auth:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-primary-auth:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-demo-auth {
+      height: 36px;
+      background-color: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-demo-auth:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 4px 0;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .login-divider-text {
+      padding: 0 10px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-disabled);
+      text-transform: uppercase;
+    }
+
+    .login-alert {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      display: none;
+      margin-bottom: 12px;
+      border: 1px solid transparent;
+    }
+
+    .login-alert.error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.25);
+      color: #f87171;
+    }
+
+    .login-footer-text {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      letter-spacing: 0.2px;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-brand">
+          <div class="login-brand-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <span class="login-brand-title">RecallOps</span>
+          <span class="login-brand-tag">OPS CONSOLE</span>
+        </div>
+        <p class="login-subtitle">Incident memory & prediction for on-call engineers</p>
+      </div>
+
+      <div class="login-alert error" id="loginAlert">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="loginAlertText">Invalid credentials</span>
+      </div>
+
+      <form class="login-form" id="loginForm" novalidate>
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="loginEmail">Operator Email</label>
+          </div>
+          <div class="form-input-wrapper">
+            <input 
+              type="email" 
+              id="loginEmail" 
+              class="form-input" 
+              placeholder="sre-operator@company.internal" 
+              autocomplete="username" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="loginPassword">Access Token / Password</label>
+          </div>
+          <div class="form-input-wrapper">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              class="form-input" 
+              placeholder="••••••••••••" 
+              autocomplete="current-password" 
+              required
+            >
+            <button type="button" class="btn-toggle-password" id="btnTogglePassword" title="Show password" aria-label="Toggle password visibility">
+              <svg id="eyeIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-actions">
+          <button type="submit" class="btn-primary-auth" id="btnSignIn">
+            <span id="btnSignInText">Sign In</span>
+          </button>
+
+          <div class="login-divider">
+            <span class="login-divider-text">Evaluator Access</span>
+          </div>
+
+          <button type="button" class="btn-demo-auth" id="btnDemoAuth">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span>Continue as Demo Operator</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="login-footer-text">
+      Authorized SRE Operations Console • Biomimetic Memory Ledger
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const loginForm = document.getElementById('loginForm');
+      const loginEmail = document.getElementById('loginEmail');
+      const loginPassword = document.getElementById('loginPassword');
+      const btnTogglePassword = document.getElementById('btnTogglePassword');
+      const eyeIcon = document.getElementById('eyeIcon');
+      const btnSignIn = document.getElementById('btnSignIn');
+      const btnSignInText = document.getElementById('btnSignInText');
+      const btnDemoAuth = document.getElementById('btnDemoAuth');
+      const loginAlert = document.getElementById('loginAlert');
+      const loginAlertText = document.getElementById('loginAlertText');
+
+      // Check for existing session
+      const existingSession = localStorage.getItem('recallops_session');
+      if (existingSession) {
+        try {
+          const parsed = JSON.parse(existingSession);
+          if (parsed && parsed.email) {
+            loginEmail.value = parsed.email;
+          }
+        } catch (e) {}
+      }
+
+      // Password Toggle
+      btnTogglePassword.addEventListener('click', () => {
+        const isPassword = loginPassword.type === 'password';
+        loginPassword.type = isPassword ? 'text' : 'password';
+        eyeIcon.innerHTML = isPassword
+          ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+          : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+      });
+
+      function showError(message) {
+        loginAlertText.textContent = message;
+        loginAlert.style.display = 'flex';
+      }
+
+      function hideError() {
+        loginAlert.style.display = 'none';
+      }
+
+      function authenticate(email, role = 'SRE On-Call') {
+        const session = {
+          email: email.trim(),
+          role: role,
+          authenticatedAt: new Date().toISOString(),
+        };
+        localStorage.setItem('recallops_session', JSON.stringify(session));
+        window.location.href = 'index.html';
+      }
+
+      // Form Submit
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideError();
+
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value.trim();
+
+        if (!email) {
+          showError('Please enter your operator email');
+          loginEmail.focus();
+          return;
+        }
+
+        if (!password) {
+          showError('Please enter your password or access token');
+          loginPassword.focus();
+          return;
+        }
+
+        // Show loading state
+        btnSignIn.disabled = true;
+        btnSignInText.innerHTML = '<div class="spinner"></div> Authenticating...';
+
+        setTimeout(() => {
+          authenticate(email, 'SRE Incident Commander');
+        }, 300);
+      });
+
+      // Demo Mode Continue
+      btnDemoAuth.addEventListener('click', () => {
+        btnDemoAuth.disabled = true;
+        btnDemoAuth.innerHTML = '<div class="spinner"></div> Entering Demo...';
+        setTimeout(() => {
+          authenticate('demo-operator@recallops.internal', 'Lead SRE (Demo)');
+        }, 150);
+      });
+    })();
+  </script>
+</body>
+</html>

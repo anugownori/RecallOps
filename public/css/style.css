@@ -4,73 +4,77 @@
    ========================================================================== */
 
 :root {
-  /* Color Palette - Deep Slate DevOps Theme */
-  --bg-app: #080c14;
-  --bg-panel: #0d1322;
-  --bg-panel-elevated: #131b2e;
-  --bg-input: #0a0f1d;
-  --bg-hover: #1c263d;
-  --bg-subtle: rgba(255, 255, 255, 0.03);
+  /* Color Palette - Linear / Vercel Calm Dark Ops Console Theme */
+  --bg-app: #090a0c;
+  --bg-panel: #111215;
+  --bg-panel-elevated: #16171b;
+  --bg-input: #0d0e11;
+  --bg-hover: #1a1b20;
+  --bg-subtle: rgba(255, 255, 255, 0.02);
 
-  --border-subtle: #1e293b;
-  --border-medium: #334155;
-  --border-focus: #0ea5e9;
-  --border-glow: rgba(14, 165, 233, 0.25);
+  --border-subtle: #222328;
+  --border-medium: #2e3037;
+  --border-focus: #5e6ad2;
+  --border-glow: rgba(94, 106, 210, 0.25);
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --text-disabled: #475569;
+  --text-primary: #ededee;
+  --text-secondary: #8b8d98;
+  --text-tertiary: #5b5d66;
+  --text-disabled: #3c3e46;
 
-  /* Semantic Telemetry Colors */
-  --cyan-primary: #0ea5e9;
-  --cyan-subtle: rgba(14, 165, 233, 0.12);
-  --emerald-primary: #10b981;
-  --emerald-subtle: rgba(16, 185, 129, 0.12);
+  /* Single Restrained Accent */
+  --accent-primary: #5e6ad2;
+  --accent-hover: #4f5bbf;
+  --accent-subtle: rgba(94, 106, 210, 0.12);
+
+  /* Semantic State Colors (Real states only) */
+  --cyan-primary: #38bdf8;
+  --cyan-subtle: rgba(56, 189, 248, 0.12);
+  --emerald-primary: #22c55e;
+  --emerald-subtle: rgba(34, 197, 94, 0.12);
   --amber-primary: #f59e0b;
   --amber-subtle: rgba(245, 158, 11, 0.12);
-  --rose-primary: #f43f5e;
-  --rose-subtle: rgba(244, 63, 94, 0.12);
-  --indigo-primary: #6366f1;
-  --indigo-subtle: rgba(99, 102, 241, 0.12);
+  --rose-primary: #ef4444;
+  --rose-subtle: rgba(239, 68, 68, 0.12);
+  --indigo-primary: #5e6ad2;
+  --indigo-subtle: rgba(94, 106, 210, 0.12);
 
   /* Geometry & Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
   --radius-full: 9999px;
 
-  --shadow-panel: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
-  --transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--border-subtle);
+  --transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Light Theme Variables */
 body.theme-light {
-  --bg-app: #f1f5f9;
+  --bg-app: #f8f9fa;
   --bg-panel: #ffffff;
-  --bg-panel-elevated: #f8fafc;
-  --bg-input: #f1f5f9;
-  --bg-hover: #e2e8f0;
-  --bg-subtle: rgba(0, 0, 0, 0.03);
+  --bg-panel-elevated: #f4f5f7;
+  --bg-input: #f4f5f7;
+  --bg-hover: #ebecef;
+  --bg-subtle: rgba(0, 0, 0, 0.02);
 
-  --border-subtle: #cbd5e1;
-  --border-medium: #94a3b8;
-  --border-focus: #0284c7;
+  --border-subtle: #e1e3e8;
+  --border-medium: #c7cad1;
+  --border-focus: #5e6ad2;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-  --text-disabled: #94a3b8;
+  --text-primary: #121316;
+  --text-secondary: #5b5d66;
+  --text-tertiary: #8b8d98;
+  --text-disabled: #b0b3ba;
 
-  --cyan-subtle: rgba(14, 165, 233, 0.08);
-  --emerald-subtle: rgba(16, 185, 129, 0.08);
-  --amber-subtle: rgba(245, 158, 11, 0.08);
-  --rose-subtle: rgba(244, 63, 94, 0.08);
+  --accent-primary: #5e6ad2;
+  --accent-hover: #4f5bbf;
+  --accent-subtle: rgba(94, 106, 210, 0.08);
 
-  --shadow-panel: 0 4px 16px -2px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-subtle);
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 0 1px var(--border-subtle);
 }
 
 /* Base Reset */
@@ -86,7 +90,7 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.45;
-  font-size: 13.5px;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -101,13 +105,13 @@ body {
    1. Top Global Navigation Bar
    ========================================================================== */
 .top-nav {
-  height: 52px;
+  height: 48px;
   background-color: var(--bg-panel);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -116,32 +120,35 @@ body {
 .nav-left, .nav-right, .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brand-icon {
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, var(--cyan-primary) 0%, var(--indigo-primary) 100%);
+  width: 24px;
+  height: 24px;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--accent-primary);
 }
 
 .brand-name {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .brand-tag {
-  font-size: 10px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
   background: var(--bg-hover);
-  color: var(--text-secondary);
-  padding: 2px 6px;
+  color: var(--text-tertiary);
+  padding: 2px 5px;
   border-radius: var(--radius-xs);
   border: 1px solid var(--border-subtle);
   letter-spacing: 0.04em;
@@ -149,72 +156,132 @@ body {
 
 .nav-divider {
   width: 1px;
-  height: 20px;
+  height: 18px;
   background-color: var(--border-subtle);
 }
 
 .cluster-selector {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
+  gap: 6px;
+  padding: 3px 8px;
   background-color: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
   cursor: pointer;
   user-select: none;
 }
 
 .env-pill {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 2px 5px;
+  padding: 1px 4px;
   border-radius: var(--radius-xs);
 }
 
 .env-pill.prod {
-  background-color: rgba(244, 63, 94, 0.15);
+  background-color: rgba(239, 68, 68, 0.12);
   color: var(--rose-primary);
-  border: 1px solid rgba(244, 63, 94, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 .engine-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
   background: var(--bg-input);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
 }
 
 .status-indicator-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 
 .status-indicator-dot.online {
   background-color: var(--emerald-primary);
-  box-shadow: 0 0 8px var(--emerald-primary);
+}
+
+.status-indicator-dot.fallback {
+  background-color: var(--cyan-primary);
+}
+
+.status-indicator-dot.offline {
+  background-color: var(--rose-primary);
+}
+
+/* Operator Auth Pill in Nav */
+.auth-operator-pill {
+  display: flex;
+  align-items: center;
+}
+
+.operator-profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.operator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--emerald-primary);
+}
+
+.operator-email {
+  font-family: var(--font-mono);
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.btn-signout {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: var(--radius-xs);
+  transition: var(--transition);
+}
+
+.btn-signout:hover {
+  color: var(--rose-primary);
+  background-color: var(--bg-hover);
 }
 
 .user-avatar {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background-color: var(--indigo-primary);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  font-size: 10.5px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-mono);
 }
+
 
 /* ==========================================================================
    2. KPI Telemetry Banner

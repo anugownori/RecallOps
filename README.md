@@ -170,7 +170,9 @@ CASCADE_BUDGET_USD=0.50
   npm start
   ```
 
-Open your browser at `http://localhost:3000` to access the interactive dashboard.
+Open `http://localhost:5000/login` (or `http://localhost:5000/`) in your browser.
+> **Evaluator Tip**: The operator sign-in page features a one-click **"Continue as Demo Operator"** button that sets an instant SRE session without requiring external credentials.
+
 
 ---
 

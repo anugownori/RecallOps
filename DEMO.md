@@ -1,6 +1,6 @@
 # RecallOps 60–90 Second Live Demo Guide
 
-This script walks through the end-to-end RecallOps experience in **60 to 90 seconds**. It demonstrates **biomimetic incident memory (Hindsight)**, **multi-model runtime intelligence (CascadeFlow)**, and the **reinforcement learning moment (Team Memory Wall)**.
+This script walks through the end-to-end RecallOps experience in **60 to 90 seconds**. It demonstrates **operator authentication**, **biomimetic incident memory (Hindsight)**, **multi-model runtime intelligence (CascadeFlow)**, and the **reinforcement learning moment (Team Memory Wall)**.
 
 ---
 
@@ -12,18 +12,31 @@ RecallOps is designed to run seamlessly with **zero API keys configured**. It ut
 
 ## ⏱️ Step-by-Step Demo Script (60–90 Seconds)
 
-### Step 1: Boot & Open Console (10s)
-1. In your terminal, run:
+### Step 0: Operator Authentication & Sign-In (10s)
+1. In your terminal, start the server:
    ```bash
    npm start
    ```
-2. Open your browser to:
+2. Open your browser to the operator sign-in page:
    ```
-   http://localhost:3000/
+   http://localhost:5000/login
    ```
+   *(Or on production: `https://recallops.vercel.app/login`)*
 3. **What to point out:**
-   * High-density SRE telemetry dashboard with real-time health indicator.
-   * Scroll down slightly to show the **Team Memory Wall** pre-loaded with historical production incident memories, status pills (`✓ Worked`, `✗ Failed`, `⏳ Pending`), and verification counts (`3x ✓`).
+   * Hand-crafted dark ops console sign-in UI (Linear/Vercel calm aesthetic).
+   * Enter custom credentials or simply click:
+     ```
+     [ Continue as Demo Operator ]
+     ```
+   * Instantly establishes an authorized SRE session in `localStorage` and loads the main dashboard.
+
+---
+
+### Step 1: Inspect the Ops Console & Team Memory Wall (10s)
+1. On the dashboard (`http://localhost:5000/`), notice:
+   * Operator profile chip in the top right (`demo-operator@recallops.internal`).
+   * Honest Memory Bank status in the navigation bar: `Memory Bank: Local Ledger (Demo Mode)`.
+   * Scroll down to inspect the **Team Memory Wall** pre-loaded with 9 historical production incident postmortems, tag pills, and verification counters (`3x ✓`, `0x ✗`, `1x ⏳`).
 
 ---
 
@@ -64,7 +77,7 @@ RecallOps is designed to run seamlessly with **zero API keys configured**. It ut
 3. **What to observe live:**
    * **Toast Notification**: `Memory Reinforced: Fix verified as SUCCESSFUL in Hindsight. Wall updated.`
    * **Team Memory Wall Instant Refresh**: The Memory Wall at the bottom refreshes automatically via `GET /store/memory`.
-   * **Visual Reinforcement Glow**: The matching incident card smoothly scrolls into view and flashes an emerald glow (`.memory-card-highlighted`) with its success counter incremented (e.g. from `3x ✓` to `4x ✓`).
+   * **Visual Reinforcement Glow**: The matching incident card smoothly scrolls into view and flashes an emerald highlight (`.memory-card-highlighted`) with its success counter incremented (e.g. from `3x ✓` to `4x ✓`).
    * **Learning Loop Closed**: Future queries for similar database pool issues now have even stronger empirical reinforcement.
 
 ---

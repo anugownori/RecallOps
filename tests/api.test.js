@@ -30,7 +30,16 @@ describe('Modular Express Backend API Tests', () => {
       assert.ok(response.text.includes('Suggested Fix'));
       assert.ok(response.text.includes('Risk Detection'));
     });
+
+    it('should serve Operator Sign-In HTML on GET /login', async () => {
+      const response = await request(app).get('/login');
+
+      assert.equal(response.status, 200);
+      assert.ok(response.text.includes('Operator Sign In'));
+      assert.ok(response.text.includes('Continue as Demo Operator'));
+    });
   });
+
 
   describe('POST /store', () => {
     it('should store incident resolution in Hindsight with structured metadata', async () => {

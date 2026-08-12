@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeWallFilter = 'all';
 
   // Initialize
+  initOperatorSession();
   initHealthAndTelemetry();
   loadTeamMemoryWall();
 
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   themeToggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('theme-light');
   });
+
 
   // Clear Input
   issueInput.addEventListener('input', () => {
@@ -640,20 +642,78 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
+   * Operator Session Management
+   */
+  function initOperatorSession() {
+    const authOperatorPill = document.getElementById('authOperatorPill');
+    const userAvatar = document.getElementById('navUserAvatar');
+    if (!authOperatorPill) return;
+
+    try {
+      const sessionRaw = localStorage.getItem('recallops_session');
+      if (sessionRaw) {
+        const session = JSON.parse(sessionRaw);
+        const email = session.email || 'operator@internal.demo';
+        const initials = email.substring(0, 2).toUpperCase();
+
+        authOperatorPill.innerHTML = `
+          <div class="operator-profile-chip" title="Active SRE Session: ${escapeHtml(email)} (${escapeHtml(session.role || 'Operator')})">
+            <span class="operator-dot"></span>
+            <span class="operator-email">${escapeHtml(email)}</span>
+            <button type="button" class="btn-signout" id="btnSignOut" title="Sign out of console">Sign out</button>
+          </div>
+        `;
+        if (userAvatar) {
+          userAvatar.innerHTML = `<span>${escapeHtml(initials)}</span>`;
+          userAvatar.title = `${email} (${session.role || 'Operator'})`;
+        }
+
+        const btnSignOut = document.getElementById('btnSignOut');
+        if (btnSignOut) {
+          btnSignOut.addEventListener('click', (e) => {
+            e.stopPropagation();
+            localStorage.removeItem('recallops_session');
+            initOperatorSession();
+          });
+        }
+      } else {
+        authOperatorPill.innerHTML = `
+          <a href="login.html" class="btn btn-secondary btn-sm" id="btnNavSignIn" style="text-decoration: none;">
+            <span>Sign In</span>
+          </a>
+        `;
+        if (userAvatar) {
+          userAvatar.innerHTML = `<span>OP</span>`;
+          userAvatar.title = 'Guest / Demo Mode';
+        }
+      }
+    } catch (e) {
+      console.warn('Session parse error:', e);
+    }
+  }
+
+  /**
    * Initialization & Helpers
    */
   async function initHealthAndTelemetry() {
+    const statusDot = document.getElementById('statusDot');
+    const engineStatusText = document.getElementById('engineStatusText');
+
     try {
       const res = await fetch('/health');
       const data = await res.json();
       if (data.success) {
-        const ind = document.getElementById('engineStatusIndicator');
-        if (ind) {
-          ind.querySelector('.status-indicator-dot').className = 'status-indicator-dot online';
+        if (statusDot) statusDot.className = 'status-indicator-dot online';
+        if (engineStatusText) {
+          engineStatusText.innerHTML = 'Memory Bank: <strong>Local Ledger</strong> (Demo Mode)';
         }
       }
     } catch (e) {
       console.warn('Backend offline');
+      if (statusDot) statusDot.className = 'status-indicator-dot offline';
+      if (engineStatusText) {
+        engineStatusText.innerHTML = 'Memory Bank: <strong>Offline</strong>';
+      }
     }
   }
 
@@ -696,4 +756,5 @@ document.addEventListener('DOMContentLoaded', () => {
     return div.innerHTML;
   }
 });
+
 
