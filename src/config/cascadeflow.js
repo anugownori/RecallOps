@@ -14,16 +14,11 @@ export const isCascadeflowConfigured = () => {
 };
 
 /**
- * Factory function to create a configured CascadeAgent instance.
- * Prefers Groq when GROQ_API_KEY is set for ultra-fast speculative routing.
+ * Builds the array of models prioritizing Groq, then OpenAI, then Anthropic
  * @param {Object} [options]
- * @returns {CascadeAgent | null}
+ * @returns {Array<Object>}
  */
-export const createCascadeAgent = (options = {}) => {
-  if (!isCascadeflowConfigured() && !options.force) {
-    return null;
-  }
-
+export const buildModels = (options = {}) => {
   const models = [];
 
   // Prefer Groq when GROQ_API_KEY is set (Ultra-fast drafter / verifier)
@@ -77,6 +72,22 @@ export const createCascadeAgent = (options = {}) => {
     });
   }
 
+  return models;
+};
+
+/**
+ * Factory function to create a configured CascadeAgent instance.
+ * Prefers Groq when GROQ_API_KEY is set for ultra-fast speculative routing.
+ * @param {Object} [options]
+ * @returns {CascadeAgent | null}
+ */
+export const createCascadeAgent = (options = {}) => {
+  if (!isCascadeflowConfigured() && !options.force) {
+    return null;
+  }
+
+  const models = buildModels(options);
+
   if (models.length === 0) {
     return null;
   }
@@ -94,8 +105,17 @@ export const createCascadeAgent = (options = {}) => {
 };
 
 /**
+ * Getter for CascadeAgent singleton
+ * @returns {CascadeAgent | null}
+ */
+export const getCascadeAgent = (options = {}) => {
+  return createCascadeAgent(options);
+};
+
+/**
  * Singleton CascadeAgent instance
  */
 export const cascadeAgent = createCascadeAgent();
 
 export default cascadeAgent;
+

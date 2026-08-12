@@ -141,8 +141,24 @@ class CascadeflowService {
       };
     }
   }
+
+  /**
+   * Alias for refineRemediation accepting { issue, recommendation, patternAnalysis }
+   * @param {Object} params
+   * @returns {Promise<Object>}
+   */
+  async refineRecommendation({ issue, recommendation, patternAnalysis, root_cause, best_fix }) {
+    const candidateFix = best_fix || (recommendation && recommendation.fix) || (typeof recommendation === 'string' ? recommendation : '');
+    return this.refineRemediation({
+      issue,
+      root_cause,
+      best_fix: candidateFix,
+      pattern_analysis: patternAnalysis,
+    });
+  }
 }
 
 export const cascadeflowService = new CascadeflowService();
 
 export default cascadeflowService;
+
